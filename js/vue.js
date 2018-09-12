@@ -8,6 +8,7 @@ Dep.prototype.init = function() {
 
 var defaultTagRE = /\{\{((?:.|\n)+?)\}\}/g;
 
+
 function Vue(option) {
     // 参数接受
     this.$option = option || {}
@@ -20,7 +21,11 @@ function Vue(option) {
     }
     this.root = option.el
     this.rootEle = document.querySelector(option.el)
+
+
+    // 添加生命周期函数
     this.init()
+    
     this.render()
 }
 
@@ -37,6 +42,9 @@ Vue.prototype.render = function() {
     this.template(div)
 }
 
+
+
+// 添加观察者，订阅者模式
 function defineReactive(obj, key, value) {
     const property = Object.getOwnPropertyDescriptor(obj, key)
     const getter = property && property.get
@@ -53,11 +61,18 @@ function defineReactive(obj, key, value) {
                 return
             }
             value = newValue
+
+
+            // 添加事件缓存
             this.render()
         }
     })
 }
 
+
+
+
+// 添加diff 算法
 
 Vue.prototype.template = function(data, currentParent) {
     let elE = currentParent
@@ -71,6 +86,8 @@ Vue.prototype.template = function(data, currentParent) {
     }
     const childrenLength = data.children ? data.children.length : 0
     if(!childrenLength) {
+
+        // 添加diff算法
         this.rootEle.innerHTML = ''
         this.rootEle.appendChild(elE)
         return
